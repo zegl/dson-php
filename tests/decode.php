@@ -2,6 +2,8 @@
 
 require_once '../DSON.php';
 
+use \Zegl\DSON\DSON;
+
 $tests = array(
         array(
             'such "foo" is "bar" wow',
@@ -57,7 +59,7 @@ $tests = array(
 
 foreach ($tests as $test)
 {
-    $res = DSON::decode($test[0]);
+    $res = DSON::decode($test[0], true);
 
     if ($res === json_decode($test[1], true))
     {

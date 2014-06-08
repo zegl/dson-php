@@ -1,0 +1,16 @@
+{
+    "name": "zegl/DSON",
+    "type": "library",
+    "description": "DSON encoder and decoder for PHP",
+    "keywords": ["DSON","JSON"],
+    "homepage": "https://github.com/Gurrewe/dson-php",
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Gustav Westling",
+            "email": "hej@gustav.tv",
+            "homepage": "http://gustav.tv",
+            "role": "Developer"
+        }
+    ]
+}

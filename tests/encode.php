@@ -2,20 +2,22 @@
 
 require_once '../DSON.php';
 
+use \Zegl\DSON\DSON;
+
 $tests = array(
-        array(
+        /*array(
             'such "foo" is "bar" wow',
             '{"foo":"bar"}'
         ),
         array(
             'such "foo" is so "bar" and "baz" also "fizzbuzz" many wow',
             '{"foo":["bar","baz","fizzbuzz"]}'
-        ),
+        ),*/
         array(
             'such "foo" is 42very3 wow',
             '{"foo":42000}'
         ),
-        array(
+        /*array(
             'such " \"such " is "bar" wow',
             '{" \"such ":"bar"}'
         ),
@@ -52,14 +54,19 @@ $tests = array(
         array(
             '"test"',
             '"test"'
-        )
+        )*/
 );
 
 foreach ($tests as $test)
 {
     $obj = json_decode($test[1], true);
     $doge = DSON::encode($obj);
-    var_dump($test[0], $doge);
+
+    if (DSON::decode($doge, true) === $obj) {
+        echo "OK!";
+    } else {
+        var_dump($test[0], $doge);
+    }
 
     echo "\n";
 }

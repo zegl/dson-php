@@ -1,5 +1,11 @@
 <?php
 
+namespace zegl\DSON;
+
+/**
+ * @author Gustav Westling <hej@gustav.tv>
+ * @version 1.0
+ */
 class DSON
 {
     /**
@@ -41,7 +47,7 @@ class DSON
      * Translates your DSON into php types
      *
      * @param string $in
-     * @param bool $assoc - When TRUE, returned objects will be converted into associative arrays.
+     * @param bool   $assoc - When TRUE, returned objects will be converted into associative arrays.
      *
      * @return mixed
      */
@@ -77,8 +83,8 @@ class DSON
      *
      *
      * @param string $in
-     * @param array $replacements
-     * @param bool $to_doge
+     * @param array  $replacements
+     * @param bool   $to_doge
      *
      * @return string
      */
@@ -104,21 +110,18 @@ class DSON
             Loop one character at a time
         */
         $length = strlen($in);
-        for ($i = 0; $i < $length; $i++)
-        {
+        for ($i = 0; $i < $length; $i++) {
             $current_char = substr($in, $i, 1);
 
             /*
                 $in_string
             */
-            if ($in_string === true)
-            {
+            if ($in_string === true) {
                 /*
                     End of string detection
                     Reset and push out output
                 */
-                if ($current_char === $quote && $is_escaping === false)
-                {
+                if ($current_char === $quote && $is_escaping === false) {
                     $out .= $quote . $current . $quote;
 
                     if ($to_doge) {
@@ -144,8 +147,7 @@ class DSON
             /*
                 String detection
             */
-            if ($current_char === $quote)
-            {
+            if ($current_char === $quote) {
                 // such reset
                 $in_string = true;
                 $current = '';
@@ -154,46 +156,50 @@ class DSON
             }
 
             // such token addition
-            if (strlen(trim($current_char)) > 0)
-            {
+            if (strlen(trim($current_char)) > 0) {
                 $current_token .= $current_char;
 
-                if ($current_char === "{")
-                {
+                if ($current_char === "{") {
                     $in_object = true;
                     $in_array = false;
                 }
 
-                if ($current_char === "[")
-                {
+                if ($current_char === "[") {
                     $in_array = true;
                     $in_object = false;
                 }
 
-            } else {
+            }
 
-                if (strlen($current_token) > 0) {
+            /*
+                $current_chat is a whitespace and $current_token is sent
+                    OR
+                $current_token is set and is numeric, but the next character in $in is not a number
+            */
+            if (
+                (strlen(trim($current_char)) === 0 && strlen($current_token) > 0) ||
+                (strlen($current_token) > 0 && is_numeric($current_token) && !is_numeric(substr($in, $i+1, 1)))
+            ) {
 
-                    // 42very3 => 42e3 => 42000
-                    $math = (float) str_replace("very", "e", $current_token);
+                // 42very3 => 42e3 => 42000
+                $math = (float) str_replace("very", "e", $current_token);
 
-                    if ($math) {
-                        $out .= $math;
-                    } else {
-                        $out .= $quote . $current_token . $quote;
-                    }
-
-                    if ($to_doge) {
-                        $out .= " ";
-                    }
-
-                    $in_string = false;
-                    $end_string = false;
-                    $current = '';
-                    $current_token = '';
-
-                    continue;
+                if ($math) {
+                    $out .= $math;
+                } else {
+                    $out .= $quote . $current_token . $quote;
                 }
+
+                if ($to_doge) {
+                    $out .= " ";
+                }
+
+                $in_string = false;
+                $end_string = false;
+                $current = '';
+                $current_token = '';
+
+                continue;
             }
 
             /*
@@ -206,7 +212,6 @@ class DSON
             if ($in_object) {
                 $tmp_current_token .= '_object';
             }
-
 
             /*
                 very replacement translation / matching
@@ -222,8 +227,7 @@ class DSON
                 }
 
                 // Select one of multiple choises
-                if (is_array($token))
-                {
+                if (is_array($token)) {
                     $token = $token[rand(0, count($token) - 1)];
                 }
 
@@ -236,6 +240,8 @@ class DSON
                 $current_token = '';
             }
         }
+
+        var_dump($out, $current_token);
 
         return trim($out);
     }
