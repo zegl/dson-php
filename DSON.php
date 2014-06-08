@@ -109,9 +109,9 @@ class DSON
             Main loop
             Loop one character at a time
         */
-        $length = strlen($in);
-        for ($i = 0; $i < $length; $i++) {
-            $current_char = substr($in, $i, 1);
+        $chars = str_split($in);
+        foreach ($chars as $i => $current_char)
+        {
 
             /*
                 $in_string
@@ -156,7 +156,8 @@ class DSON
             }
 
             // such token addition
-            if (strlen(trim($current_char)) > 0) {
+            $trim_current_char = trim($current_char);
+            if ($trim_current_char !== '') {
                 $current_token .= $current_char;
 
                 if ($current_char === "{") {
@@ -177,8 +178,8 @@ class DSON
                 $current_token is set and is numeric, but the next character in $in is not a number, but only when transforming to doge
             */
             if (
-                (strlen(trim($current_char)) === 0 && strlen($current_token) > 0) ||
-                ($to_doge === true && strlen($current_token) > 0 && is_numeric($current_token) && !is_numeric(substr($in, $i+1, 1)))
+                ($trim_current_char === '' && strlen($current_token) > 0) ||
+                ($to_doge === true && strlen($current_token) > 0 && is_numeric($current_token) && !is_numeric($chars[$i+1]))
             ) {
 
                 // 42very3 => 42e3 => 42000
