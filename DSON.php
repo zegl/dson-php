@@ -2,6 +2,15 @@
 
 class DSON
 {
+    /**
+     * DSON::encode()
+     *
+     * Translates your php-objects into DSON
+     *
+     * @param mixed $in
+     *
+     * @return string
+     */
     public static function encode($in)
     {
         $replacements = array(
@@ -27,11 +36,11 @@ class DSON
     }
 
     /**
-     * DSON::encode()
+     * DSON::decode()
      *
      * Translates your DSON into php types
      *
-     * @param mixed $in
+     * @param string $in
      * @param bool $assoc - When TRUE, returned objects will be converted into associative arrays.
      *
      * @return mixed
@@ -63,8 +72,21 @@ class DSON
         return json_decode($out, $assoc);
     }
 
+    /**
+     * DSON::translate()
+     *
+     *
+     * @param string $in
+     * @param array $replacements
+     * @param bool $to_doge
+     *
+     * @return string
+     */
     private static function translate($in, $replacements, $to_doge = false)
     {
+        /*
+            Definition of variables
+        */
         $in_string = false;
         $is_escaping = false;
 
@@ -77,17 +99,24 @@ class DSON
         $in_object = false;
         $in_array = false;
 
+        /*
+            Main loop
+            Loop one character at a time
+        */
         $length = strlen($in);
         for ($i = 0; $i < $length; $i++)
         {
             $current_char = substr($in, $i, 1);
 
-            //var_dump($current_char);
-
+            /*
+                $in_string
+            */
             if ($in_string === true)
             {
-                // such end of string
-                // many reset and push to output
+                /*
+                    End of string detection
+                    Reset and push out output
+                */
                 if ($current_char === $quote && $is_escaping === false)
                 {
                     $out .= $quote . $current . $quote;
@@ -103,17 +132,23 @@ class DSON
                     continue;
                 }
 
+                /*
+                    Escaping detection
+                */
                 $is_escaping = ($current_char === "\\");
                 $current .= $current_char;
 
                 continue;
             }
 
-            // many beginning of string
+            /*
+                String detection
+            */
             if ($current_char === $quote)
             {
+                // such reset
                 $in_string = true;
-                $current = ''; // such reset
+                $current = '';
 
                 continue;
             }
@@ -139,6 +174,7 @@ class DSON
 
                 if (strlen($current_token) > 0) {
 
+                    // 42very3 => 42e3 => 42000
                     $math = (float) str_replace("very", "e", $current_token);
 
                     if ($math) {
@@ -160,9 +196,9 @@ class DSON
                 }
             }
 
-            var_dump($current_token);
-
-            // very replacemtnt matching
+            /*
+                Separators in arrays and objects are different
+            */
             $tmp_current_token = $current_token;
             if ($in_array) {
                 $tmp_current_token .= '_array';
@@ -172,17 +208,20 @@ class DSON
             }
 
 
+            /*
+                very replacement translation / matching
+            */
             if (isset($replacements[$tmp_current_token]) ||
                 isset($replacements[$current_token]))
             {
 
                 if (isset($replacements[$tmp_current_token])) {
                     $token = $replacements[$tmp_current_token];
-                    //var_dump($tmp_current_token);
                 } else {
                     $token = $replacements[$current_token];
                 }
 
+                // Select one of multiple choises
                 if (is_array($token))
                 {
                     $token = $token[rand(0, count($token) - 1)];
