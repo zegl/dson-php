@@ -2,7 +2,7 @@
 
 require_once '../DSON.php';
 
-use \Zegl\DSON\DSON;
+use \zegl\dson\DSON;
 
 $tests = array(
         array(

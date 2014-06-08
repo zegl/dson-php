@@ -1,5 +1,5 @@
 {
-    "name": "zegl/DSON",
+    "name": "zegl/dson-php",
     "type": "library",
     "description": "DSON encoder and decoder for PHP",
     "keywords": ["DSON","JSON"],

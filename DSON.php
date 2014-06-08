@@ -1,6 +1,6 @@
 <?php
 
-namespace zegl\DSON;
+namespace zegl\dson;
 
 /**
  * @author Gustav Westling <hej@gustav.tv>
@@ -174,11 +174,11 @@ class DSON
             /*
                 $current_chat is a whitespace and $current_token is sent
                     OR
-                $current_token is set and is numeric, but the next character in $in is not a number
+                $current_token is set and is numeric, but the next character in $in is not a number, but only when transforming to doge
             */
             if (
                 (strlen(trim($current_char)) === 0 && strlen($current_token) > 0) ||
-                (strlen($current_token) > 0 && is_numeric($current_token) && !is_numeric(substr($in, $i+1, 1)))
+                ($to_doge === true && strlen($current_token) > 0 && is_numeric($current_token) && !is_numeric(substr($in, $i+1, 1)))
             ) {
 
                 // 42very3 => 42e3 => 42000
@@ -240,8 +240,6 @@ class DSON
                 $current_token = '';
             }
         }
-
-        var_dump($out, $current_token);
 
         return trim($out);
     }
